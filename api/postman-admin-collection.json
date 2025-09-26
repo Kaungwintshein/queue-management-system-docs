@@ -1,0 +1,620 @@
+{
+  "info": {
+    "name": "Queue Management System - Admin API",
+    "description": "Complete admin management API collection for the Queue Management System including User, Counter, and Role management",
+    "version": "2.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3001",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "counter_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "role_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.success && responseJson.data && responseJson.data.token) {",
+                  "        pm.collectionVariables.set('auth_token', responseJson.data.token);",
+                  "        console.log('Auth token saved to collection variable');",
+                  "        console.log('Response format: ', JSON.stringify(responseJson, null, 2));",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Authenticate user and receive JWT token"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Get the authenticated user's profile information"
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "logout"]
+            },
+            "description": "Logout the authenticated user"
+          },
+          "response": []
+        }
+      ],
+      "description": "Core authentication endpoints"
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "List Users",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.success && responseJson.data && responseJson.data.users && responseJson.data.users.length > 0) {",
+                  "        pm.collectionVariables.set('user_id', responseJson.data.users[0].id);",
+                  "        console.log('User ID saved to collection variable: ' + responseJson.data.users[0].id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/users?limit=20&offset=0",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users"],
+              "query": [
+                {
+                  "key": "role",
+                  "value": "staff",
+                  "disabled": true
+                },
+                {
+                  "key": "isActive",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Get list of users in the organization (admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"newstaff\",\n  \"email\": \"newstaff@example.com\",\n  \"password\": \"staffpass123\",\n  \"role\": \"staff\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users"]
+            },
+            "description": "Create a new user (admin/super_admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users", "{{user_id}}"]
+            },
+            "description": "Get user details by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"updatedusername\",\n  \"email\": \"updated@example.com\",\n  \"role\": \"admin\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users", "{{user_id}}"]
+            },
+            "description": "Update user information"
+          },
+          "response": []
+        },
+        {
+          "name": "Ban User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/users/{{user_id}}/ban",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users", "{{user_id}}", "ban"]
+            },
+            "description": "Ban a user account (admin/super_admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Reactivate User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/users/{{user_id}}/reactivate",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users", "{{user_id}}", "reactivate"]
+            },
+            "description": "Reactivate a banned user account (admin/super_admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Reset User Password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/users/{{user_id}}/reset-password",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users", "{{user_id}}", "reset-password"]
+            },
+            "description": "Reset user password (admin/super_admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users", "{{user_id}}"]
+            },
+            "description": "Delete a user account (super_admin only)"
+          },
+          "response": []
+        }
+      ],
+      "description": "User management endpoints (admin access required)"
+    },
+    {
+      "name": "Counter Management",
+      "item": [
+        {
+          "name": "List Counters",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.success && responseJson.data && responseJson.data.length > 0) {",
+                  "        pm.collectionVariables.set('counter_id', responseJson.data[0].id);",
+                  "        console.log('Counter ID saved to collection variable: ' + responseJson.data[0].id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/counters",
+              "host": ["{{base_url}}"],
+              "path": ["api", "counters"],
+              "query": [
+                {
+                  "key": "active",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "assigned",
+                  "value": "false",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get list of counters"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Counter",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Counter 1\",\n  \"isActive\": true,\n  \"assignedStaffId\": null\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/counters",
+              "host": ["{{base_url}}"],
+              "path": ["api", "counters"]
+            },
+            "description": "Create a new counter (admin/super_admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Counter by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/counters/{{counter_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "counters", "{{counter_id}}"]
+            },
+            "description": "Get counter details by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Counter",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Counter 1\",\n  \"isActive\": true,\n  \"assignedStaffId\": null\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/counters/{{counter_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "counters", "{{counter_id}}"]
+            },
+            "description": "Update counter information"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Counter",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/counters/{{counter_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "counters", "{{counter_id}}"]
+            },
+            "description": "Delete a counter (admin/super_admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Assign Staff to Counter",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"staffId\": \"{{user_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/counters/{{counter_id}}/assign",
+              "host": ["{{base_url}}"],
+              "path": ["api", "counters", "{{counter_id}}", "assign"]
+            },
+            "description": "Assign staff member to counter"
+          },
+          "response": []
+        },
+        {
+          "name": "Unassign Staff from Counter",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/counters/{{counter_id}}/unassign",
+              "host": ["{{base_url}}"],
+              "path": ["api", "counters", "{{counter_id}}", "unassign"]
+            },
+            "description": "Unassign staff member from counter"
+          },
+          "response": []
+        }
+      ],
+      "description": "Counter management endpoints (admin access required)"
+    },
+    {
+      "name": "Role Management",
+      "item": [
+        {
+          "name": "List Roles",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.success && responseJson.data && responseJson.data.length > 0) {",
+                  "        pm.collectionVariables.set('role_id', responseJson.data[0].id);",
+                  "        console.log('Role ID saved to collection variable: ' + responseJson.data[0].id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/roles",
+              "host": ["{{base_url}}"],
+              "path": ["api", "roles"]
+            },
+            "description": "Get list of available roles"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Manager\",\n  \"description\": \"Manager role with specific permissions\",\n  \"permissions\": [\n    \"user.read\",\n    \"user.update\",\n    \"counter.read\",\n    \"counter.update\",\n    \"token.read\",\n    \"token.update\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/roles",
+              "host": ["{{base_url}}"],
+              "path": ["api", "roles"]
+            },
+            "description": "Create a new role (super_admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Role by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/roles/{{role_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "roles", "{{role_id}}"]
+            },
+            "description": "Get role details by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Manager\",\n  \"description\": \"Updated manager role\",\n  \"permissions\": [\n    \"user.read\",\n    \"user.update\",\n    \"user.create\",\n    \"counter.read\",\n    \"counter.update\",\n    \"counter.create\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/roles/{{role_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "roles", "{{role_id}}"]
+            },
+            "description": "Update role information (super_admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Role",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/roles/{{role_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "roles", "{{role_id}}"]
+            },
+            "description": "Delete a role (super_admin only)"
+          },
+          "response": []
+        }
+      ],
+      "description": "Role management endpoints (admin/super_admin access required)"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Add any global pre-request scripts here",
+          "console.log('Making request to: ' + pm.request.url);"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global test scripts",
+          "pm.test('Response time is less than 5000ms', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+          "});",
+          "",
+          "if (pm.response.code !== 429) {",
+          "    pm.test('Response has standardized format', function () {",
+          "        const responseJson = pm.response.json();",
+          "        pm.expect(responseJson).to.have.property('success');",
+          "        pm.expect(responseJson).to.have.property('message');",
+          "        pm.expect(responseJson).to.have.property('timestamp');",
+          "        pm.expect(responseJson.success).to.be.a('boolean');",
+          "        pm.expect(responseJson.message).to.be.a('string');",
+          "    });",
+          "",
+          "    if (pm.response.code >= 200 && pm.response.code < 300) {",
+          "        pm.test('Success response has data field', function () {",
+          "            const responseJson = pm.response.json();",
+          "            pm.expect(responseJson.success).to.be.true;",
+          "            if (responseJson.data !== null) {",
+          "                pm.expect(responseJson).to.have.property('data');",
+          "            }",
+          "        });",
+          "    } else {",
+          "        pm.test('Error response has error field', function () {",
+          "            const responseJson = pm.response.json();",
+          "            pm.expect(responseJson.success).to.be.false;",
+          "            pm.expect(responseJson).to.have.property('error');",
+          "        });",
+          "    }",
+          "}"
+        ]
+      }
+    }
+  ]
+}
