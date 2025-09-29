@@ -482,6 +482,105 @@ All API responses follow this standardized format:
 }
 ```
 
+### Get Available Counters for Staff Selection
+
+**GET** `/counters/available`
+
+Gets all active counters that are not assigned to any staff member. This endpoint is specifically for staff to see which counters they can select.
+
+**Headers:**
+
+- `Authorization: Bearer <token>` (Staff only)
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "counter-uuid-1",
+      "name": "Counter 1",
+      "isActive": true,
+      "assignedStaffId": null
+    },
+    {
+      "id": "counter-uuid-2",
+      "name": "Counter 2",
+      "isActive": true,
+      "assignedStaffId": null
+    }
+  ]
+}
+```
+
+### Select Counter for Staff
+
+**POST** `/counters/select`
+
+Allows a staff member to select an available counter. Only one counter can be assigned per staff member.
+
+**Headers:**
+
+- `Authorization: Bearer <token>` (Staff only)
+
+**Request Body:**
+
+```json
+{
+  "counterId": "counter-uuid"
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Counter selected successfully",
+  "data": {
+    "id": "counter-uuid",
+    "name": "Counter 1",
+    "isActive": true,
+    "assignedStaffId": "staff-uuid",
+    "assignedStaff": {
+      "id": "staff-uuid",
+      "username": "staff1",
+      "role": "staff"
+    }
+  }
+}
+```
+
+**Error Responses:**
+
+- `409`: Staff already has a counter assigned
+- `404`: Counter not found or already assigned
+- `400`: Invalid counter ID
+
+### Release Current Counter Assignment
+
+**POST** `/counters/release`
+
+Allows a staff member to release their current counter assignment.
+
+**Headers:**
+
+- `Authorization: Bearer <token>` (Staff only)
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Counter released successfully"
+}
+```
+
+**Error Responses:**
+
+- `404`: No counter assigned to the staff member
+
 ---
 
 ## Role Management Endpoints

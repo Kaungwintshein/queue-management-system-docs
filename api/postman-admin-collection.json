@@ -450,6 +450,74 @@
             "description": "Unassign staff member from counter"
           },
           "response": []
+        },
+        {
+          "name": "Get Available Counters (Staff)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.success && responseJson.data && responseJson.data.length > 0) {",
+                  "        pm.collectionVariables.set('counter_id', responseJson.data[0].id);",
+                  "        console.log('Counter ID saved to collection variable: ' + responseJson.data[0].id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/counters/available",
+              "host": ["{{base_url}}"],
+              "path": ["api", "counters", "available"]
+            },
+            "description": "Get available counters for staff selection (staff access required)"
+          },
+          "response": []
+        },
+        {
+          "name": "Select Counter (Staff)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"counterId\": \"{{counter_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/counters/select",
+              "host": ["{{base_url}}"],
+              "path": ["api", "counters", "select"]
+            },
+            "description": "Select a counter for staff (staff access required)"
+          },
+          "response": []
+        },
+        {
+          "name": "Release Counter (Staff)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/counters/release",
+              "host": ["{{base_url}}"],
+              "path": ["api", "counters", "release"]
+            },
+            "description": "Release current counter assignment (staff access required)"
+          },
+          "response": []
         }
       ],
       "description": "Counter management endpoints (admin access required)"
