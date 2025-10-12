@@ -14,10 +14,12 @@
 
 ### Prerequisites
 
-- Node.js 18+ and npm
-- PostgreSQL 14+
-- Redis (optional, for caching)
-- Git
+- **Node.js 18+** and npm
+- **PostgreSQL 14+** with UUID extension
+- **Redis** (recommended for caching and session storage)
+- **Git** for version control
+- **Modern Browser** with WebSocket support
+- **SSL Certificate** (for production HTTPS/WSS)
 
 ### 1. Clone and Setup
 
@@ -38,11 +40,17 @@ cd ..
 # Start PostgreSQL (macOS with Homebrew)
 brew services start postgresql
 
-# Create database
+# Create database with UUID extension
 createdb queue_management_system
 
 # Or using psql
 psql -c "CREATE DATABASE queue_management_system;"
+psql -d queue_management_system -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
+
+# Start Redis (optional but recommended)
+brew services start redis
+# Or using Docker
+docker run -d -p 6379:6379 redis:alpine
 ```
 
 ### 3. API Setup
@@ -417,6 +425,73 @@ jobs:
 
 ---
 
+## 🚀 Modern Features Configuration
+
+### Service Type Management
+
+The system now includes advanced service type configuration with priority management:
+
+```bash
+# After deployment, configure service types via Admin Portal
+# Navigate to: /admin/token-configs
+# Create service types with priorities (0-10)
+# Example service types:
+# - Express Service (Priority: 10)
+# - Standard Service (Priority: 5)
+# - Premium Service (Priority: 8)
+```
+
+### Queue Prioritization Setup
+
+Staff can now select which service types to prioritize:
+
+```bash
+# Staff Interface Features:
+# 1. Navigate to /staff
+# 2. Select assigned counter
+# 3. Configure service types in Counter Status Card
+# 4. Choose "Select All" or individual service types
+# 5. Queue automatically filters based on selection
+```
+
+### Individual Token Calling
+
+Enhanced token management with specific token calling:
+
+```bash
+# New API Endpoints Available:
+# POST /api/queue/call-next-token/{tokenId}
+# - Call specific tokens by ID
+# - Enhanced validation and error handling
+# - Real-time WebSocket updates
+```
+
+### Modern UI Features
+
+The system now includes contemporary design elements:
+
+```bash
+# UI Enhancements:
+# - Glass morphism design with backdrop blur
+# - Gradient backgrounds and accents
+# - Smooth animations and hover effects
+# - Color-coded queue states
+# - Responsive mobile-first design
+# - Voice announcements for called tokens
+```
+
+### Performance Optimizations
+
+```bash
+# Modern Performance Features:
+# - Zustand state management with persistence
+# - React Query for efficient data fetching
+# - Code splitting and lazy loading
+# - Optimistic updates with rollback
+# - WebSocket connection pooling
+# - Redis caching for improved performance
+```
+
 ## 🔧 Environment Variables
 
 ### Development (.env.local)
@@ -440,6 +515,11 @@ FRONTEND_URL="http://localhost:3000"
 # Optional
 REDIS_URL="redis://localhost:6379"
 LOG_LEVEL="debug"
+
+# Modern Features
+ENABLE_VOICE_ANNOUNCEMENTS="true"
+DEFAULT_SERVICE_PRIORITY="5"
+MAX_SERVICE_PRIORITY="10"
 ```
 
 #### UI (.env.local)
@@ -472,6 +552,11 @@ FRONTEND_URL="https://yourdomain.com"
 CORS_ORIGIN="https://yourdomain.com"
 RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX_REQUESTS=100
+
+# Modern Features
+ENABLE_VOICE_ANNOUNCEMENTS="true"
+DEFAULT_SERVICE_PRIORITY="5"
+MAX_SERVICE_PRIORITY="10"
 
 # Performance
 REDIS_URL="redis://redis-host:6379"

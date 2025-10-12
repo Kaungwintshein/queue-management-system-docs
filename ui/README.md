@@ -8,7 +8,8 @@ This directory contains all UI-related documentation for the Queue Management Sy
 
 - **[UI Implementation Guide v1](./ui-implementation-guide.md)** - Initial UI implementation guide
 - **[UI Implementation Guide v2](./ui-implementation-guide-v2.md)** - Updated UI implementation guide with improvements
-- **[UI Implementation Guide v3](./ui-implementation-guide-v3.md)** - Latest UI implementation guide with latest features
+- **[UI Implementation Guide v3](./ui-implementation-guide-v3.md)** - Enhanced UI implementation guide with advanced features
+- **[UI Implementation Guide v4](./ui-implementation-guide-v4.md)** - **Latest** Modern glass morphism design with contemporary styling
 
 ## 🎨 UI Architecture
 
@@ -43,32 +44,53 @@ ui/
 
 ## 🚀 Key Features
 
-### Authentication & Authorization
+### 🎨 Modern Design System
+
+- **Glass Morphism**: Contemporary UI with semi-transparent elements and backdrop blur
+- **Gradient Accents**: Beautiful gradient backgrounds and overlays
+- **Smooth Animations**: Hover effects, transitions, and micro-interactions
+- **Responsive Design**: Mobile-first approach with adaptive layouts
+- **Color-Coded System**: Intuitive color coding for different queue states
+
+### 🔐 Authentication & Authorization
 
 - **Login/Logout**: Secure authentication with JWT tokens
 - **Role-based Access**: Different interfaces for admin, staff, and display
 - **Protected Routes**: Automatic redirection based on authentication status
 - **Persistent Sessions**: State persistence across browser sessions
 
-### Admin Portal
+### 🏢 Admin Portal
 
 - **User Management**: CRUD operations for users with advanced features
 - **Counter Management**: Manage service counters and staff assignments
 - **Role Management**: Handle user roles and permissions
+- **Token Configuration**: Manage service types and priority settings
+- **Modern Data Tables**: Advanced tables with glass morphism styling
 - **Responsive Design**: Works on desktop and mobile devices
-- **Data Tables**: Advanced tables with sorting, filtering, and pagination
 
-### Staff Interface
+### 👨‍💼 Staff Interface
 
 - **Counter Assignment**: Staff can be assigned to specific counters
-- **Queue Management**: Handle customer queues and service sessions
+- **Service Type Selection**: Choose which service types to prioritize
+- **Advanced Queue Management**: Individual token calling and priority filtering
 - **Real-time Updates**: Live updates via WebSocket connections
+- **Modern Dashboard**: Glass morphism cards with gradient headers
 
-### Display Interface
+### 📺 Display Interface
 
 - **Queue Display**: Show current queue status and next numbers
 - **Counter Status**: Display which counters are active
 - **Real-time Updates**: Live queue updates without page refresh
+- **Voice Announcements**: Audio notifications for called tokens
+- **Modern Styling**: Clean, contemporary customer-facing display
+
+### 🎫 Token Management
+
+- **Service Type Configuration**: Customizable service types with priority settings
+- **Queue Prioritization**: Staff can select which service types to prioritize
+- **Individual Token Calling**: Call specific tokens by ID
+- **No-Show Management**: Handle skipped tokens with recall functionality
+- **Service Completion Tracking**: Monitor service duration and completion rates
 
 ## 🎯 UI Components
 

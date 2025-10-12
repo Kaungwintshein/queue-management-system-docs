@@ -8,15 +8,17 @@ A comprehensive architectural blueprint for the Queue Management System, detaili
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                              FRONTEND LAYER                                 │
 ├─────────────────┬─────────────────┬─────────────────────────────────────────┤
-│  Display UI     │   Staff UI      │        Super Admin UI                   │
+│  Display UI     │   Staff UI      │        Admin UI                         │
 │                 │                 │                                         │
 │ ┌─────────────┐ │ ┌─────────────┐ │ ┌─────────────┬─────────────────────────┐ │
 │ │   React     │ │ │   React     │ │ │   React     │    Dashboard            │ │
 │ │   + Socket  │ │ │   + Auth    │ │ │   + Router  │    Analytics            │ │
-│ │   (Read-Only)│ │ │   + Queue   │ │ │   + Auth    │    User Management      │ │
-│ │             │ │ │   Mgmt      │ │ │   + Full    │    System Settings      │ │
-│ └─────────────┘ │ └─────────────┘ │ │   Access    │                         │ │
-│                 │                 │ └─────────────┴─────────────────────────┘ │
+│ │   + Glass   │ │ │   + Queue   │ │ │   + Auth    │    User Management      │ │
+│ │   Morphism  │ │ │   + Service │ │ │   + Full    │    Token Config         │ │
+│ │   + Voice   │ │ │   Type Mgmt │ │ │   Access    │    Counter Mgmt         │ │
+│ │   Announce  │ │ │   + Priority│ │ │   + Modern  │    Role Management      │ │
+│ │             │ │ │   Filtering │ │ │   UI Design │                         │ │
+│ └─────────────┘ │ └─────────────┘ │ └─────────────┴─────────────────────────┘ │
 └─────────────────┴─────────────────┴─────────────────────────────────────────┘
                                     │
                                     │ HTTPS/WSS
@@ -38,9 +40,11 @@ A comprehensive architectural blueprint for the Queue Management System, detaili
 │ ┌─────────────┐ │ ┌─────────────┐ │ │Queue Cleanup│    Analytics            │ │
 │ │Express.js   │ │ │Socket.io    │ │ │Report Gen   │    Cleanup Jobs         │ │
 │ │+ Middleware │ │ │+ Auth       │ │ │Notifications│    Data Export          │ │
-│ │+ Validation │ │ │+ Rooms      │ │ │             │                         │ │
-│ │+ Auth       │ │ │+ Events     │ │ └─────────────┴─────────────────────────┘ │
-│ └─────────────┘ │ └─────────────┘ │                                         │
+│ │+ Validation │ │ │+ Rooms      │ │ │Token Mgmt   │    Service Type Mgmt    │ │
+│ │+ Auth       │ │ │+ Events     │ │ │Priority     │    Queue Optimization   │ │
+│ │+ Queue Mgmt │ │ │+ Announce   │ │ │Filtering    │                         │ │
+│ │+ Token Config│ │ │+ Real-time │ │ │             │                         │ │
+│ └─────────────┘ │ └─────────────┘ │ └─────────────┴─────────────────────────┘ │
 └─────────────────┴─────────────────┴─────────────────────────────────────────┘
                                     │
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -252,6 +256,96 @@ CREATE INDEX idx_tokens_active_queue ON tokens(organization_id, customer_type, p
 WHERE status = 'waiting';
 CREATE INDEX idx_users_active ON users(organization_id, role) WHERE is_active = true;
 ```
+
+## 🚀 Modern Features & Enhancements
+
+### Advanced Queue Management
+
+#### Service Type Configuration
+
+- **Token Configurations**: Customizable service types with priority settings
+- **Priority System**: Configurable priority levels (0-10) for different service types
+- **Service Descriptions**: Detailed descriptions for each service type
+- **Active/Inactive States**: Toggle service types on/off as needed
+
+#### Queue Prioritization
+
+- **Staff Service Selection**: Staff can choose which service types to prioritize
+- **Global State Management**: Zustand store with localStorage persistence
+- **Real-time Filtering**: Queue automatically filters based on selected service types
+- **Visual Indicators**: Clear visual distinction for priority tokens
+
+#### Individual Token Calling
+
+- **Specific Token Selection**: Call any token by ID instead of just next in queue
+- **API Endpoint**: `POST /queue/call-next-token/{tokenId}`
+- **Frontend Integration**: Individual "Call" buttons on each token
+- **State Management**: Disabled state when current token exists
+
+### Modern User Interface
+
+#### Glass Morphism Design
+
+- **Semi-transparent Elements**: `bg-white/70 backdrop-blur-sm` styling
+- **Gradient Overlays**: Beautiful gradient backgrounds and accents
+- **Layered Depth**: Shadow effects and border transparency
+- **Smooth Animations**: Hover effects and micro-interactions
+
+#### Contemporary Styling
+
+- **Rounded Corners**: `rounded-3xl` for modern appearance
+- **Gradient Headers**: Color-coded headers for different sections
+- **Status Badges**: Visual indicators with dot elements
+- **Interactive Elements**: Scale and shadow effects on hover
+
+#### Color-Coded System
+
+- **Queue States**:
+  - Waiting: Orange/Amber gradients
+  - Serving: Blue/Indigo gradients
+  - Completed: Green/Emerald gradients
+  - No-Show: Red/Rose gradients
+- **Priority Indicators**: Green styling for selected service types
+- **Status Communication**: Clear visual hierarchy
+
+### Enhanced User Experience
+
+#### Real-time Updates
+
+- **WebSocket Integration**: Live queue updates across all interfaces
+- **Voice Announcements**: Audio notifications for called tokens
+- **State Synchronization**: Consistent state across multiple clients
+- **Optimistic Updates**: Immediate UI feedback with rollback capability
+
+#### Advanced State Management
+
+- **Zustand Stores**: Global state with persistence
+- **React Query**: Efficient data fetching and caching
+- **Type Safety**: Full TypeScript implementation with Zod validation
+- **Error Handling**: Comprehensive error boundaries and user feedback
+
+#### Responsive Design
+
+- **Mobile-First**: Optimized for all screen sizes
+- **Touch-Friendly**: Large touch targets and gestures
+- **Adaptive Layouts**: Components that adapt to screen size
+- **Performance Optimized**: Code splitting and lazy loading
+
+### API Enhancements
+
+#### New Endpoints
+
+- **Token Configuration Management**: Full CRUD operations for service types
+- **Specific Token Calling**: Call tokens by ID with validation
+- **Enhanced Queue Status**: Detailed queue information with filtering
+- **Service Type Priority**: Priority-based queue management
+
+#### Improved Validation
+
+- **Zod Schemas**: Type-safe request/response validation
+- **Error Handling**: Comprehensive error responses
+- **Rate Limiting**: Protection against abuse
+- **Input Sanitization**: Security-first approach
 
 ## 🔐 Security Architecture
 

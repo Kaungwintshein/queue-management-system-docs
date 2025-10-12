@@ -62,14 +62,40 @@ queue-management-system/
 
 ## 🔧 Key Features
 
+### 🎯 **Core Functionality**
+
+- **Token Management**: Complete token lifecycle with configurable service types
+- **Queue Management**: Advanced queue prioritization and filtering
+- **Counter Management**: Dynamic counter assignment and service type configuration
+- **Real-time Updates**: WebSocket integration for live queue updates and announcements
+
+### 🔐 **Security & Access Control**
+
 - **Authentication & Authorization**: JWT-based auth with role-based access control
-- **User Management**: Complete CRUD operations for users
-- **Counter Management**: Manage service counters and staff assignments
-- **Role Management**: Handle user roles and permissions
-- **Real-time Updates**: WebSocket integration for live updates
+- **User Management**: Complete CRUD operations for users with role assignments
+- **Role Management**: Granular permissions for staff, admin, and super admin roles
+
+### 🎨 **Modern User Interface**
+
+- **Glass Morphism Design**: Contemporary UI with glass morphism effects and gradients
+- **Responsive Design**: Mobile-first approach with modern styling
+- **Interactive Components**: Smooth animations and hover effects
+- **Multi-Interface Support**: Staff, Admin, Display, and Token Creation interfaces
+
+### 🚀 **Advanced Features**
+
+- **Service Type Configuration**: Customizable service types with priority settings
+- **Queue Prioritization**: Staff can select which service types to prioritize
+- **Token Calling System**: Individual token calling with specific token selection
+- **No-Show Management**: Handle skipped tokens with recall functionality
+- **Service Completion Tracking**: Monitor service duration and completion rates
+
+### 🧪 **Quality Assurance**
+
 - **Comprehensive Testing**: Unit, integration, and E2E tests
-- **API Documentation**: Swagger/OpenAPI documentation
+- **API Documentation**: Complete Swagger/OpenAPI documentation
 - **Postman Collections**: Ready-to-use API testing collections
+- **Type Safety**: Full TypeScript implementation with Zod validation
 
 ## 📚 Additional Resources
 
@@ -98,4 +124,4 @@ For questions or issues:
 
 ---
 
-_Last updated: $(date)_
+_Last updated: December 2024_

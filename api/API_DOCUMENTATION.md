@@ -781,6 +781,456 @@ Allows a staff member to release their current counter assignment.
 
 ---
 
+## Queue Management Endpoints
+
+### Get Queue Status
+
+**GET** `/queue/status`
+
+Get the current queue status for the organization.
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Queue status retrieved successfully",
+  "data": {
+    "counters": [
+      {
+        "counter": {
+          "id": "counter-id",
+          "name": "Counter 1",
+          "isActive": true,
+          "assignedStaffId": "staff-id"
+        },
+        "currentToken": {
+          "id": "token-id",
+          "number": "1001",
+          "status": "called",
+          "priority": 5,
+          "tokenConfigId": "config-id",
+          "tokenConfig": {
+            "serviceName": "Express Service",
+            "description": "Quick service"
+          }
+        },
+        "nextTokens": [
+          {
+            "id": "token-id-2",
+            "number": "1002",
+            "status": "waiting",
+            "priority": 3,
+            "tokenConfigId": "config-id-2",
+            "tokenConfig": {
+              "serviceName": "Standard Service",
+              "description": "Regular service"
+            }
+          }
+        ],
+        "noShowTokens": []
+      }
+    ],
+    "summary": {
+      "totalWaiting": 15,
+      "totalServing": 3,
+      "totalCompleted": 42
+    }
+  }
+}
+```
+
+### Create Token
+
+**POST** `/queue/tokens`
+
+Create a new token in the queue.
+
+**Request Body:**
+
+```json
+{
+  "tokenConfigId": "config-id",
+  "customerType": "walk-in",
+  "metadata": {
+    "source": "kiosk",
+    "location": "lobby"
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Token created successfully",
+  "data": {
+    "id": "token-id",
+    "number": "1001",
+    "status": "waiting",
+    "priority": 5,
+    "tokenConfigId": "config-id",
+    "tokenConfig": {
+      "serviceName": "Express Service",
+      "description": "Quick service"
+    },
+    "createdAt": "2024-12-01T10:00:00.000Z"
+  }
+}
+```
+
+### Call Next Token
+
+**POST** `/queue/call-next-token`
+
+Call the next available token for a counter.
+
+**Request Body:**
+
+```json
+{
+  "counterId": "counter-id"
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Token called successfully",
+  "data": {
+    "id": "token-id",
+    "number": "1001",
+    "status": "called",
+    "priority": 5,
+    "tokenConfigId": "config-id",
+    "tokenConfig": {
+      "serviceName": "Express Service",
+      "description": "Quick service"
+    },
+    "calledAt": "2024-12-01T10:05:00.000Z",
+    "servedBy": "staff-id",
+    "counterId": "counter-id"
+  }
+}
+```
+
+### Call Specific Token
+
+**POST** `/queue/call-next-token/{tokenId}`
+
+Call a specific token by its ID.
+
+**Request Body:**
+
+```json
+{
+  "counterId": "counter-id"
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Token called successfully",
+  "data": {
+    "id": "token-id",
+    "number": "1001",
+    "status": "called",
+    "priority": 5,
+    "tokenConfigId": "config-id",
+    "tokenConfig": {
+      "serviceName": "Express Service",
+      "description": "Quick service"
+    },
+    "calledAt": "2024-12-01T10:05:00.000Z",
+    "servedBy": "staff-id",
+    "counterId": "counter-id"
+  }
+}
+```
+
+### Start Serving Token
+
+**POST** `/queue/tokens/{tokenId}/start-serving`
+
+Mark a token as being served.
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Service started successfully",
+  "data": {
+    "id": "token-id",
+    "number": "1001",
+    "status": "serving",
+    "servingStartedAt": "2024-12-01T10:10:00.000Z"
+  }
+}
+```
+
+### Complete Service
+
+**POST** `/queue/tokens/{tokenId}/complete`
+
+Mark a token as completed.
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Service completed successfully",
+  "data": {
+    "token": {
+      "id": "token-id",
+      "number": "1001",
+      "status": "completed",
+      "completedAt": "2024-12-01T10:15:00.000Z",
+      "serviceDuration": 5
+    }
+  }
+}
+```
+
+### Mark Token as No-Show
+
+**POST** `/queue/tokens/{tokenId}/no-show`
+
+Mark a token as no-show.
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Token marked as no-show",
+  "data": {
+    "id": "token-id",
+    "number": "1001",
+    "status": "no_show",
+    "noShowAt": "2024-12-01T10:20:00.000Z"
+  }
+}
+```
+
+### Recall Token
+
+**POST** `/queue/tokens/{tokenId}/recall`
+
+Recall a no-show token back to the queue.
+
+**Request Body:**
+
+```json
+{
+  "counterId": "counter-id"
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Token recalled successfully",
+  "data": {
+    "id": "token-id",
+    "number": "1001",
+    "status": "waiting",
+    "recalledAt": "2024-12-01T10:25:00.000Z"
+  }
+}
+```
+
+### Repeat Token Announcement
+
+**POST** `/queue/tokens/{tokenId}/repeat-announcement`
+
+Repeat the announcement for a called token.
+
+**Request Body:**
+
+```json
+{
+  "counterId": "counter-id"
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Announcement repeated successfully",
+  "data": {
+    "id": "token-id",
+    "number": "1001",
+    "announcedAt": "2024-12-01T10:30:00.000Z"
+  }
+}
+```
+
+---
+
+## Token Configuration Endpoints
+
+### Get Active Token Configurations
+
+**GET** `/token-configs/active`
+
+Get all active token configurations.
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Active token configurations retrieved successfully",
+  "data": [
+    {
+      "id": "config-id",
+      "serviceName": "Express Service",
+      "description": "Quick service for urgent requests",
+      "priority": 10,
+      "isActive": true,
+      "createdAt": "2024-12-01T09:00:00.000Z"
+    }
+  ]
+}
+```
+
+### Get All Token Configurations
+
+**GET** `/token-configs`
+
+Get all token configurations (active and inactive).
+
+**Query Parameters:**
+
+- `page` (optional): Page number for pagination
+- `limit` (optional): Number of items per page
+- `search` (optional): Search term for service name
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Token configurations retrieved successfully",
+  "data": {
+    "configs": [
+      {
+        "id": "config-id",
+        "serviceName": "Express Service",
+        "description": "Quick service for urgent requests",
+        "priority": 10,
+        "isActive": true,
+        "createdAt": "2024-12-01T09:00:00.000Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 1,
+      "totalPages": 1
+    }
+  }
+}
+```
+
+### Create Token Configuration
+
+**POST** `/token-configs`
+
+Create a new token configuration.
+
+**Request Body:**
+
+```json
+{
+  "serviceName": "Premium Service",
+  "description": "High-priority service for VIP customers",
+  "priority": 10,
+  "isActive": true
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Token configuration created successfully",
+  "data": {
+    "id": "new-config-id",
+    "serviceName": "Premium Service",
+    "description": "High-priority service for VIP customers",
+    "priority": 10,
+    "isActive": true,
+    "createdAt": "2024-12-01T11:00:00.000Z"
+  }
+}
+```
+
+### Update Token Configuration
+
+**PUT** `/token-configs/{configId}`
+
+Update an existing token configuration.
+
+**Request Body:**
+
+```json
+{
+  "serviceName": "Updated Premium Service",
+  "description": "Updated description",
+  "priority": 8,
+  "isActive": true
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Token configuration updated successfully",
+  "data": {
+    "id": "config-id",
+    "serviceName": "Updated Premium Service",
+    "description": "Updated description",
+    "priority": 8,
+    "isActive": true,
+    "updatedAt": "2024-12-01T11:30:00.000Z"
+  }
+}
+```
+
+### Delete Token Configuration
+
+**DELETE** `/token-configs/{configId}`
+
+Delete a token configuration.
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Token configuration deleted successfully",
+  "data": null
+}
+```
+
+---
+
 ## Available Permissions
 
 The following permissions are available for role assignment:
@@ -807,6 +1257,24 @@ The following permissions are available for role assignment:
 - `token.create` - Create queue tokens
 - `token.read` - View token information
 - `token.update` - Update token status
+- `token.call` - Call tokens (next or specific)
+- `token.serve` - Start serving tokens
+- `token.complete` - Complete token service
+- `token.no_show` - Mark tokens as no-show
+- `token.recall` - Recall no-show tokens
+- `token.announce` - Repeat token announcements
+
+### Queue Management
+
+- `queue.read` - View queue status
+- `queue.manage` - Manage queue operations
+
+### Token Configuration Management
+
+- `token_config.create` - Create token configurations
+- `token_config.read` - View token configurations
+- `token_config.update` - Update token configurations
+- `token_config.delete` - Delete token configurations
 
 ### Analytics
 
